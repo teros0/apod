@@ -2,6 +2,8 @@
 
 Android application that brings NASA's **Astronomy Picture of the Day (APOD)** to your home screen. While the app offers a full-screen gallery and image description, the **primary focus of this project is the Home Screen Widget**, developed to enjoy today's image without opening the app or the website.
 
+<img width="244" height="542" alt="зображення" src="https://github.com/user-attachments/assets/24b89686-c85a-497e-a03a-0b16be6c5ebd" />
+<img width="244" height="542" alt="зображення" src="https://github.com/user-attachments/assets/cb0ccab1-6c5b-4be9-8d17-96d0bb2a5bb2" />
 
 ## 🛠️ Installation & Setup
 
