@@ -17,7 +17,7 @@ To run this project, you will need to provide your own NASA API Key.
 ## 📜 Credits & Attributions
 
 * **Observatory Icon:** [Observatory icons](https://www.flaticon.com/free-icons/observatory) created by Freepik - Flaticon.
-* **Widget Preview Image:** Based on the NASA APOD from January 11, 2026: [The Horsehead Nebula in Infrared](https://apod.nasa.gov/apod/ap260111.html).
+* **Widget Preview Image:** Based on the NASA APOD from January 11, 2026: [The Sombrero Galaxy in Infrared](https://apod.nasa.gov/apod/ap260111.html).
 * **Data API:** Powered by [NASA Open APIs](https://api.nasa.gov/).
 
 ## 📦 Releases
