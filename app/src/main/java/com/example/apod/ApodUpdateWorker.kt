@@ -7,12 +7,18 @@ import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.widget.RemoteViews
+import androidx.work.Constraints
 import androidx.work.CoroutineWorker
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import androidx.work.WorkerParameters
 import com.bumptech.glide.Glide
 import java.lang.Exception
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import java.util.concurrent.TimeUnit
 
 class ApodUpdateWorker(context: Context, params: WorkerParameters) : CoroutineWorker(context, params) {
 
@@ -50,13 +56,18 @@ class ApodUpdateWorker(context: Context, params: WorkerParameters) : CoroutineWo
             val bitmap = Glide.with(applicationContext)
                 .asBitmap()
                 .load(imageUrl)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE)
                 .submit(512, 512)
                 .get()
 
             saveApodLocally(apod, bitmap)
 
+            // force a clear state
+            remoteViews.setImageViewResource(R.id.widget_image, android.R.color.transparent)
             remoteViews.setImageViewBitmap(R.id.widget_image, bitmap)
-            remoteViews.setTextViewText(R.id.widget_title, apod.title) // Don't forget the title!
+
+            remoteViews.setTextViewText(R.id.widget_title, apod.title)
 
             val intent = Intent(applicationContext, MainActivity::class.java)
             val pendingIntent = PendingIntent.getActivity(
@@ -90,5 +101,23 @@ class ApodUpdateWorker(context: Context, params: WorkerParameters) : CoroutineWo
             url.contains("v=") -> url.substringAfter("v=").substringBefore("&")
             else -> url.substringAfterLast("/")
         }
+    }
+}
+
+object WorkScheduler {
+    fun scheduleApodWork(context: Context) {
+        val workRequest = PeriodicWorkRequestBuilder<ApodUpdateWorker>(6, TimeUnit.HOURS)
+            .setConstraints(
+                Constraints.Builder()
+                    .setRequiredNetworkType(NetworkType.CONNECTED)
+                    .build()
+            )
+            .build()
+
+        WorkManager.getInstance(context).enqueueUniquePeriodicWork(
+            "APOD_UPDATE",
+            ExistingPeriodicWorkPolicy.KEEP,
+            workRequest
+        )
     }
 }

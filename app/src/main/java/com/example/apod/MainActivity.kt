@@ -15,6 +15,7 @@ import androidx.work.WorkManager
 import java.io.File
 import androidx.core.net.toUri
 import androidx.work.ExistingWorkPolicy
+import com.bumptech.glide.Glide
 
 class MainActivity : AppCompatActivity() {
 
@@ -24,6 +25,8 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        WorkScheduler.scheduleApodWork(this)
 
         swipeRefresh = findViewById(R.id.swipeRefresh)
 
@@ -79,14 +82,20 @@ class MainActivity : AppCompatActivity() {
         findViewById<TextView>(R.id.main_explanation).text = explanation
 
         val imageFile = File(filesDir, "today_image.png")
-        findViewById<ImageView>(R.id.main_image).apply {
-            if (imageFile.exists()) {
-                setImageURI(imageFile.toUri())
-                setOnClickListener {
-                    handleImageClick(url)
-                }
+        val mainImage = findViewById<ImageView>(R.id.main_image)
+
+        if (imageFile.exists()) {
+            Glide.with(this)
+                .load(imageFile)
+                .skipMemoryCache(true)
+                .diskCacheStrategy(com.bumptech.glide.load.engine.DiskCacheStrategy.NONE)
+                .into(mainImage)
+
+            mainImage.setOnClickListener {
+                handleImageClick(url)
             }
         }
+
     }
 
     private fun handleImageClick(url: String) {
